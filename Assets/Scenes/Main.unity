@@ -280,11 +280,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 446652, guid: 28b53fc28d3a140c392f0e2d919f9de1, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 446652, guid: 28b53fc28d3a140c392f0e2d919f9de1, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 446652, guid: 28b53fc28d3a140c392f0e2d919f9de1, type: 3}
       propertyPath: m_LocalPosition.z
@@ -309,6 +309,14 @@ PrefabInstance:
     - target: {fileID: 446652, guid: 28b53fc28d3a140c392f0e2d919f9de1, type: 3}
       propertyPath: m_RootOrder
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 21246652, guid: 28b53fc28d3a140c392f0e2d919f9de1, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 1257151661
+      objectReference: {fileID: 0}
+    - target: {fileID: 21246652, guid: 28b53fc28d3a140c392f0e2d919f9de1, type: 3}
+      propertyPath: m_SortingLayer
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 11446652, guid: 28b53fc28d3a140c392f0e2d919f9de1, type: 3}
       propertyPath: foodText
@@ -413,6 +421,7 @@ GameObject:
   - component: {fileID: 1089777626}
   - component: {fileID: 1089777625}
   - component: {fileID: 1089777630}
+  - component: {fileID: 1089777631}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -513,6 +522,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameManager: {fileID: 133658, guid: 1ca8c6e960c494bbd937610290f80d1b, type: 3}
+--- !u!114 &1089777631
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1089777624}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d8238cc53530b64fbb7828c3d3bb591, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 1586916898}
+  damping: 1
+  lookAheadFactor: 1
+  lookAheadReturnSpeed: 0.5
+  lookAheadMoveThreshold: 0.1
 --- !u!1 &1410265689
 GameObject:
   m_ObjectHideFlags: 0
@@ -688,3 +714,9 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1563974219}
   m_CullTransparentMesh: 0
+--- !u!4 &1586916898 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 446652, guid: 28b53fc28d3a140c392f0e2d919f9de1,
+    type: 3}
+  m_PrefabInstance: {fileID: 595632862}
+  m_PrefabAsset: {fileID: 0}

@@ -64,6 +64,7 @@ public class Player : MovingObject
                 currentPosition.y += vertical;
 
                 //update board manager in game manager
+                GameManager.instance.UpdateGameBoard(horizontal, vertical, currentPosition);
             }
         }
 	}
@@ -125,9 +126,5 @@ public class Player : MovingObject
 		}
 	}
 
-    public Vector2 GetCurrentPosition()
-    {
-        return currentPosition;
-    }
 }
 

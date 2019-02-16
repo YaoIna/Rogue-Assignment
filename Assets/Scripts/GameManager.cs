@@ -83,9 +83,9 @@ public class GameManager : MonoBehaviour
 	}
 
     // update our game board based on player's current position
-    public void updateGameBoard(int x,int y)
+    public void UpdateGameBoard(int stepX,int stepY,Vector2 playerPosition)
     {
-
+        boardManager.ExtendGameBoard(stepX, stepY, playerPosition);
     }
 
     //GameOver is called when the player reaches 0 health points
