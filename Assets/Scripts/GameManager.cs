@@ -12,29 +12,33 @@ public class GameManager : MonoBehaviour
 	public static GameManager instance = null;				//Static instance of GameManager which allows it to be accessed by any other script.
 	[HideInInspector] public bool playersTurn = true;		//Boolean to check if it's players turn, hidden in inspector but public.
 
+    private BoardManager boardManager;
 	private List<Enemy> enemies;							//List of all Enemy units, used to issue them move commands.
 	private bool enemiesMoving;								//Boolean to check if enemies are moving.
 
 	//Awake is always called before any Start functions
 	void Awake()
 	{
-		//Check if instance already exists
-		if (instance == null)
-			
-			//if not, set instance to this
-			instance = this;
-		
-		//If instance already exists and it's not this:
-		else if (instance != this)
-			
-			//Then destroy this. This enforces our singleton pattern, meaning there can only ever be one instance of a GameManager.
-			Destroy(gameObject);	
+        //Check if instance already exists
+        if (instance == null)
+
+            //if not, set instance to this
+            instance = this;
+
+        //If instance already exists and it's not this:
+        else if (instance != this)
+
+            //Then destroy this. This enforces our singleton pattern, meaning there can only ever be one instance of a GameManager.
+            Destroy(gameObject);	
 		
 		//Sets this to not be destroyed when reloading scene
 		DontDestroyOnLoad(gameObject);
 		
 		//Assign enemies to a new List of Enemy objects.
 		enemies = new List<Enemy>();
+
+        //Assign board manager to new board manager
+        boardManager = GetComponent<BoardManager>();
 		
 		//Call the InitGame function to initialize the first level 
 		InitGame();
@@ -60,6 +64,9 @@ public class GameManager : MonoBehaviour
 	{
 		//Clear any Enemy objects in our List to prepare for next level.
 		enemies.Clear();
+
+        //setup board manager
+        boardManager.GameBoardSetup();
 	}
 	
 	//Update is called every frame.
@@ -74,9 +81,15 @@ public class GameManager : MonoBehaviour
 		//Start moving enemies.
 		StartCoroutine (MoveEnemies ());
 	}
-	
-	//GameOver is called when the player reaches 0 health points
-	public void GameOver()
+
+    // update our game board based on player's current position
+    public void updateGameBoard(int x,int y)
+    {
+
+    }
+
+    //GameOver is called when the player reaches 0 health points
+    public void GameOver()
 	{
 		//Disable this GameManager.
 		enabled = false;
