@@ -4,7 +4,7 @@ using UnityEngine;
 
 public enum TileType
 {
-    Essential, Random, Empty
+    Essential, Random, Empty, Chest
 }
 
 public class DungeonManager : MonoBehaviour
@@ -116,7 +116,8 @@ public class DungeonManager : MonoBehaviour
                 Vector2 chamberTile = new Vector2(x, y);
                 if (!positionGrid.ContainsKey(chamberTile) && chamberTile.x < maxBound && chamberTile.x > 0 && chamberTile.y < maxBound && chamberTile.y > 0)
                 {
-                    positionGrid.Add(chamberTile, TileType.Empty);
+                    TileType type = Random.Range(0, 5) == 1 ? TileType.Chest : TileType.Empty;
+                    positionGrid.Add(chamberTile, type);
                 }
             }
         }

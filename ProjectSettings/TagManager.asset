@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - Exit
+  - Food
+  - Soda
   layers:
   - Default
   - TransparentFX
@@ -17,7 +19,7 @@ TagManager:
   - BlockingLayer
   - Floor
   - Units
-  - 
+  - Items
   - 
   - 
   - 
@@ -44,6 +46,9 @@ TagManager:
     locked: 0
   - name: Floor
     uniqueID: 3522538429
+    locked: 0
+  - name: Items
+    uniqueID: 2095415315
     locked: 0
   - name: Units
     uniqueID: 1257151661

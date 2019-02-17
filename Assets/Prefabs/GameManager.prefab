@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   turnDelay: 0.1
-  healthPoints: 100
+  healthPoints: 1
   playersTurn: 1
 --- !u!114 &1289524390683581125
 MonoBehaviour:
@@ -80,6 +80,8 @@ MonoBehaviour:
   - {fileID: 110520, guid: 5ddc2d7828b2d462286f09274199ad9a, type: 3}
   - {fileID: 110520, guid: 64139c47b57e34c5fa97fd79f8d25244, type: 3}
   - {fileID: 110520, guid: 741804431f4d341cdae1f15b3896aeff, type: 3}
+  chestTile: {fileID: 9170362946886433343, guid: f9ca0f002dae44fd5ab8b89aeeda4a29,
+    type: 3}
   exit: {fileID: 4171934706396702853, guid: d63f5a2013b9c480fa265193cb35bc96, type: 3}
   outerWallTiles:
   - {fileID: 110520, guid: 7094f72151ec74f569c4e03f1ec0f8e7, type: 3}

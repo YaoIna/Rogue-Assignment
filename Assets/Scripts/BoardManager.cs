@@ -26,6 +26,8 @@ public class BoardManager : MonoBehaviour
     public GameObject[] floorTiles;
     public GameObject[] wallTiles;
 
+    public GameObject chestTile;
+
     private Dictionary<Vector2, Vector2> positionGrid = new Dictionary<Vector2, Vector2>();
     //A tranform to hold our floor tiles
     private Transform gameBoardHolder;
@@ -81,6 +83,13 @@ public class BoardManager : MonoBehaviour
             int tt = Random.Range(0, floorTiles.Length);
             toInstantiate = floorTiles[tt];
             instance = Instantiate(toInstantiate, new Vector3(tile.Key.x, tile.Key.y, 0f), Quaternion.identity, dungeonBoardHolder) as GameObject;
+
+            //create chest
+            if (tile.Value == TileType.Chest)
+            {
+                toInstantiate = chestTile;
+                instance = Instantiate(toInstantiate, new Vector3(tile.Key.x, tile.Key.y, 0f), Quaternion.identity, dungeonBoardHolder) as GameObject;
+            }
         }
 
         for (int x = -1; x < bound + 1; x++)

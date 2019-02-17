@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
-using UnityEngine.UI;	//Allows us to use UI.
+using UnityEngine.UI;   //Allows us to use UI.
+using System.Collections.Generic;
 
 //Player inherits from MovingObject, our base class for objects that can move, Enemy also inherits from this.
 public class Player : MovingObject
@@ -12,6 +13,12 @@ public class Player : MovingObject
     public bool onWorld;
     public bool dungeonTransition;						//Used to store player health points total during level.
 
+    public int attactNumber;
+    public int defenseNumber;
+    public Image glove;
+    public Image boot;
+
+    private Dictionary<string, Item> inventory;
     private Vector2 currentPosition;
 	
 	//Start overrides the Start function of MovingObject
@@ -30,6 +37,8 @@ public class Player : MovingObject
 
         onWorld = true;
         dungeonTransition = false;
+
+        inventory = new Dictionary<string, Item>();
 		
 		//Call the Start function of the MovingObject base class.
 		base.Start ();
@@ -64,7 +73,8 @@ public class Player : MovingObject
             {
                 //Call AttemptMove passing in the generic parameter Wall, since that is what Player may interact with if they encounter one (by attacking it)
                 //Pass in horizontal and vertical as parameters to specify the direction to move Player in.
-                canMove = AttemptMove<Wall>(horizontal, vertical);
+                canMove = onWorld ? AttemptMove<Wall>(horizontal, vertical) : AttemptMove<Chest>(horizontal, vertical);
+
                 if (canMove && onWorld)
                 {
                     currentPosition.x += horizontal;
@@ -95,14 +105,76 @@ public class Player : MovingObject
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void RefillHealth(string itemTag)
     {
-        if (collision.tag == "Exit")
+        if (health >= 100)
+            return;
+        switch (itemTag)
         {
-            dungeonTransition = true;
-            Invoke("SwitchSecene", 0.5f);
-            Destroy(collision.gameObject);
+            case "Soda":
+                health += Random.Range(5, 11);
+                break;
+            case "Food":
+                health += Random.Range(1, 5);
+                break;
+            default:
+                break;
         }
+        GameManager.instance.healthPoints = health;
+        healthText.text = "Health: " + health;
+    }
+
+    private void UpdateInventory(Collider2D item)
+    {
+        Item itemInstance = item.GetComponent<Item>();
+        if (inventory.ContainsKey(itemInstance.itemName))
+        {
+            inventory[itemInstance.itemName] = itemInstance;
+        }
+        else
+        {
+            inventory.Add(itemInstance.itemName, itemInstance);
+        }
+        switch (itemInstance.itemType)
+        {
+            case ItemType.Glove:
+                glove.color = itemInstance.levelColor;
+                break;
+            case ItemType.Boot:
+                boot.color = itemInstance.levelColor;
+                break;
+        }
+
+        attactNumber = 0;
+        defenseNumber = 0;
+        foreach(KeyValuePair<string,Item> gear in inventory)
+        {
+            attactNumber += gear.Value.attackNum;
+            defenseNumber += gear.Value.defenseNum;
+        }
+    }
+
+        private void OnTriggerEnter2D(Collider2D collision)
+    {
+        switch (collision.tag)
+        {
+            case "Exit":
+                dungeonTransition = true;
+                Invoke("SwitchSecene", 0.5f);
+                Destroy(collision.gameObject);
+                break;
+            case "Food":
+            case "Soda":
+                RefillHealth(collision.tag);
+                break;
+            case "Item":
+                UpdateInventory(collision);
+                Destroy(collision.gameObject);
+                break;
+            default:
+                break;
+        }
+        Destroy(collision.gameObject);
     }
 
     //AttemptMove overrides the AttemptMove function in the base class MovingObject
@@ -123,14 +195,20 @@ public class Player : MovingObject
 	//It takes a generic parameter T which in the case of Player is a Wall which the player can attack and destroy.
 	protected override void OnCantMove <T> (T component)
 	{
-		//Set hitWall to equal the component passed in as a parameter.
-		Wall hitWall = component as Wall;
-		
-		//Call the DamageWall function of the Wall we are hitting.
-		hitWall.DamageWall (wallDamage);
-		
-		//Set the attack trigger of the player's animation controller in order to play the player's attack animation.
-		animator.SetTrigger ("playerChop");
+        if (typeof(T) == typeof(Wall))
+        {
+            //Set hitWall to equal the component passed in as a parameter.
+            Wall hitWall = component as Wall;
+
+            //Call the DamageWall function of the Wall we are hitting.
+            hitWall.DamageWall(wallDamage);
+        } else if (typeof(T) == typeof(Chest))
+        {
+            Chest cheest = component as Chest;
+            cheest.open();
+        }
+        //Set the attack trigger of the player's animation controller in order to play the player's attack animation.
+        animator.SetTrigger ("playerChop");
 	}
 	
 	//LoseHealth is called when an enemy attacks the player.
@@ -161,5 +239,4 @@ public class Player : MovingObject
 			GameManager.instance.GameOver ();
 		}
 	}
-
 }

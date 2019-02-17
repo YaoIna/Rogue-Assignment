@@ -6,7 +6,10 @@ public class Wall : MonoBehaviour
 	public Sprite dmgSprite;					//Alternate sprite to display after Wall has been attacked by player.
 	public int hp = 3;							//hit points for the wall.
 
+    public GameObject[] foodItems;
+
 	private SpriteRenderer spriteRenderer;		//Store a component reference to the attached SpriteRenderer.
+
 
 	void Awake ()
 	{
@@ -27,7 +30,17 @@ public class Wall : MonoBehaviour
 		
 		//If hit points are less than or equal to zero:
 		if(hp <= 0)
-			//Disable the gameObject.
-			gameObject.SetActive (false);
+        {
+            // spawn a food item 
+            //30%
+            if (Random.Range(0, 3) == 1)
+            {
+                GameObject toInstantiate = foodItems[Random.Range(0, foodItems.Length)];
+                GameObject instance = Instantiate(toInstantiate, new Vector3(transform.position.x, transform.position.y, 0f), Quaternion.identity, transform.parent) as GameObject;
+            }
+            //Disable the gameObject.
+            gameObject.SetActive(false);
+        }
+       
 	}
 }
