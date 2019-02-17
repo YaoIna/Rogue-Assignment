@@ -20,8 +20,8 @@ public class BoardManager : MonoBehaviour
 	}
 
     // orginal matrix tiles
-    public int orignalRows = 7;
-    public int orignalColumns = 7;
+    public int originalRows = 7;
+    public int originalColumns = 7;
 
     public GameObject[] floorTiles;
     public GameObject[] wallTiles;
@@ -30,6 +30,13 @@ public class BoardManager : MonoBehaviour
     //A tranform to hold our floor tiles
     private Transform gameBoardHolder;
 
+    //dungeon parameters
+    public GameObject exit;
+    public GameObject[] outerWallTiles;
+
+    private Transform dungeonBoardHolder;
+    private Dictionary<Vector2, Vector2> dungeonPositionGrids;
+
 
     //add tile
     private void AddTile(Vector2 position,bool hasWall)
@@ -37,9 +44,19 @@ public class BoardManager : MonoBehaviour
         // if board has this tile, do nothing
         if (positionGrid.ContainsKey(position))
             return;
+
+        //add normal word tile
         positionGrid.Add(position, position);
         GameObject tile = floorTiles[Random.Range(0, floorTiles.Length)];
         GameObject tileInstance = Instantiate(tile, new Vector3(position.x, position.y, 0f), Quaternion.identity, gameBoardHolder) as GameObject;
+
+        //add tile of dungeon's entrance
+        if (Random.Range(0, 100) == 1) {
+            tile = exit;
+            tileInstance = Instantiate(tile, new Vector3(position.x, position.y, 0f), Quaternion.identity, gameBoardHolder) as GameObject;
+        }
+
+        //add walls tile
         if (hasWall)
         {
             //add 0.2 possibility to generate a wall on tile
@@ -52,14 +69,19 @@ public class BoardManager : MonoBehaviour
 
     }
 
+    public void setDungeonBoard(Dictionary<Vector2,TileType> tiles,int bound,Vector2 endPos)
+    {
+        gameBoardHolder.gameObject.SetActive(false);
+    }
+
     //setup our orignal game board
     public void GameBoardSetup()
     {
         gameBoardHolder = new GameObject("GameBoard").transform;
 
-        for(int x = 0; x < orignalColumns; x++)
+        for(int x = 0; x < originalColumns; x++)
         {
-            for(int y = 0; y < orignalRows; y++)
+            for(int y = 0; y < originalRows; y++)
             {
                 AddTile(new Vector2(x, y), false);
             }
