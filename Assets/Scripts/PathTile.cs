@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class PathTile : MonoBehaviour
+public class PathTile 
 {
     public Vector2 position;
     public TileType type;
@@ -36,16 +36,5 @@ public class PathTile : MonoBehaviour
             pathTiles.Add(new Vector2(position.x - 1, position.y)); 
         }
         return pathTiles;
-    }
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

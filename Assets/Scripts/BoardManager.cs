@@ -78,7 +78,8 @@ public class BoardManager : MonoBehaviour
 
         foreach(KeyValuePair<Vector2,TileType> tile in tiles)
         {
-            toInstantiate = floorTiles[Random.Range(0, floorTiles.Length)];
+            int tt = Random.Range(0, floorTiles.Length);
+            toInstantiate = floorTiles[tt];
             instance = Instantiate(toInstantiate, new Vector3(tile.Key.x, tile.Key.y, 0f), Quaternion.identity, dungeonBoardHolder) as GameObject;
         }
 

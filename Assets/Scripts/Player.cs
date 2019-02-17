@@ -8,7 +8,9 @@ public class Player : MovingObject
 	public int wallDamage = 1;					//How much damage a player does to a wall when chopping it.
 	public Text healthText;						//UI Text to display current player health total.
 	private Animator animator;					//Used to store a reference to the Player's animator component.
-	private int health;							//Used to store player health points total during level.
+	private int health;
+    public bool onWorld;
+    public bool dungeonTransition;						//Used to store player health points total during level.
 
     private Vector2 currentPosition;
 	
@@ -25,6 +27,9 @@ public class Player : MovingObject
 		healthText.text = "Health: " + health;
 
         currentPosition.x = currentPosition.y = 3;
+
+        onWorld = true;
+        dungeonTransition = false;
 		
 		//Call the Start function of the MovingObject base class.
 		base.Start ();
@@ -54,24 +59,55 @@ public class Player : MovingObject
 
         //Check if we have a non-zero value for horizontal or vertical
         if (horizontal != 0 || vertical != 0)
-		{
-            //Call AttemptMove passing in the generic parameter Wall, since that is what Player may interact with if they encounter one (by attacking it)
-            //Pass in horizontal and vertical as parameters to specify the direction to move Player in.
-            canMove = AttemptMove<Wall> (horizontal, vertical);
-            if (canMove)
+        {
+            if (!dungeonTransition)
             {
-                currentPosition.x += horizontal;
-                currentPosition.y += vertical;
+                //Call AttemptMove passing in the generic parameter Wall, since that is what Player may interact with if they encounter one (by attacking it)
+                //Pass in horizontal and vertical as parameters to specify the direction to move Player in.
+                canMove = AttemptMove<Wall>(horizontal, vertical);
+                if (canMove && onWorld)
+                {
+                    currentPosition.x += horizontal;
+                    currentPosition.y += vertical;
 
-                //update board manager in game manager
-                GameManager.instance.UpdateGameBoard(horizontal, vertical, currentPosition);
+                    //update board manager in game manager
+                    GameManager.instance.UpdateGameBoard(horizontal, vertical, currentPosition);
+                }
             }
         }
 	}
-	
-	//AttemptMove overrides the AttemptMove function in the base class MovingObject
-	//AttemptMove takes a generic parameter T which for Player will be of the type Wall, it also takes integers for x and y direction to move in.
-	protected override bool AttemptMove <T> (int xDir, int yDir)
+
+    private void SwitchSecene()
+    {
+        if (onWorld)
+        {
+            onWorld = false;
+            GameManager.instance.SwitchToDungeon();
+            dungeonTransition = false;
+            transform.position = GameManager.instance.GetStartPosInDungeon();
+        }
+        else
+        {
+            onWorld = true;
+            GameManager.instance.SwitchToWorld();
+            dungeonTransition = false;
+            transform.position = currentPosition;
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.tag == "Exit")
+        {
+            dungeonTransition = true;
+            Invoke("SwitchSecene", 0.5f);
+            Destroy(collision.gameObject);
+        }
+    }
+
+    //AttemptMove overrides the AttemptMove function in the base class MovingObject
+    //AttemptMove takes a generic parameter T which for Player will be of the type Wall, it also takes integers for x and y direction to move in.
+    protected override bool AttemptMove <T> (int xDir, int yDir)
 	{	
 		//Call the AttemptMove method of the base class, passing in the component T (in this case Wall) and x and y direction to move.
 		bool hit = base.AttemptMove <T> (xDir, yDir);
@@ -127,4 +163,3 @@ public class Player : MovingObject
 	}
 
 }
-

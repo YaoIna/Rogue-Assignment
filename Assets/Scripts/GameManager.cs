@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour
 	[HideInInspector] public bool playersTurn = true;		//Boolean to check if it's players turn, hidden in inspector but public.
 
     private BoardManager boardManager;
+    private DungeonManager dungeonManger;
 	private List<Enemy> enemies;							//List of all Enemy units, used to issue them move commands.
 	private bool enemiesMoving;								//Boolean to check if enemies are moving.
 
@@ -39,24 +40,26 @@ public class GameManager : MonoBehaviour
 
         //Assign board manager to new board manager
         boardManager = GetComponent<BoardManager>();
+        dungeonManger = GetComponent<DungeonManager>();
 		
 		//Call the InitGame function to initialize the first level 
 		InitGame();
 
         //Add our callback to sceneloaded delegate
-        SceneManager.sceneLoaded += OnSceneLoaded;	}
+        //SceneManager.sceneLoaded += OnSceneLoaded;
+        	}
 
 
  //   //This is called each time a scene is loaded.
- //   void OnLevelWasLoaded(int index)
-	//{
-	//	//Call InitGame to initialize our level.
-	//	InitGame();
-	//}
-    void OnSceneLoaded(Scene scene,LoadSceneMode mode)
-    {
-        InitGame();
-    }
+    void OnLevelWasLoaded(int index)
+	{
+		//Call InitGame to initialize our level.
+		InitGame();
+	}
+    //void OnSceneLoaded(Scene scene,LoadSceneMode mode)
+    //{
+    //    InitGame();
+    //}
 
 
     //Initializes the game for each level.
@@ -86,6 +89,22 @@ public class GameManager : MonoBehaviour
     public void UpdateGameBoard(int stepX,int stepY,Vector2 playerPosition)
     {
         boardManager.ExtendGameBoard(stepX, stepY, playerPosition);
+    }
+
+    public void SwitchToDungeon()
+    {
+        dungeonManger.CreateDungeon();
+        boardManager.SetDungeonBoard(dungeonManger.positionGrid, dungeonManger.maxBound, dungeonManger.endPos);
+    }
+
+    public void SwitchToWorld()
+    {
+        boardManager.SetWorld();
+    }
+
+    public Vector2 GetStartPosInDungeon()
+    {
+        return dungeonManger.startPos;
     }
 
     //GameOver is called when the player reaches 0 health points
@@ -120,6 +139,6 @@ public class GameManager : MonoBehaviour
     private void OnDisable()
     {
         //Remove our callback to sceneloaded delegate
-        SceneManager.sceneLoaded -= OnSceneLoaded;
+        //SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 }

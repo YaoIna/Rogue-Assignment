@@ -20,6 +20,8 @@ public class DungeonManager : MonoBehaviour
     {
         positionGrid.Clear();
         maxBound = Random.Range(40, 81);
+        BuildEssentialPath();
+        BuildRandomPath();
 
     }
 
@@ -40,7 +42,7 @@ public class DungeonManager : MonoBehaviour
             int randomIndex = Random.Range(0, adjacentTileCount);
             PathTile nextPath = new PathTile(TileType.Essential, path.adjacentTiles[randomIndex], minBound, maxBound, positionGrid);
             if(nextPath.position.x > path.position.x || (((int)nextPath.position.x) == maxBound - 1 && Random.Range(0, 2) == 1)){
-                boundTracker++;
+                ++boundTracker;
             }
             path = nextPath;
         }
@@ -61,23 +63,42 @@ public class DungeonManager : MonoBehaviour
             Vector2 randomPos = new Vector2(tile.Key.x, tile.Key.y);
             pathQueue.Add(new PathTile(TileType.Random, randomPos, minBound, maxBound, positionGrid));
         }
-        pathQueue.ForEach(delegate (PathTile tile)
+        //pathQueue.ForEach(delegate (PathTile tile)
+        //{
+        //    int adjacent = tile.adjacentTiles.Count;
+        //    if (adjacent != 0)
+        //    {
+        //        if (Random.Range(0, 5) == 1)
+        //        {
+        //            BuildChamber(tile);
+        //        } else if (Random.Range(0, 5) == 1 || (tile.type == TileType.Random && adjacent > 1))
+        //        {
+        //            int randomIndex = Random.Range(0, adjacent);
+        //            Vector2 pathPos = tile.adjacentTiles[randomIndex];
+        //            positionGrid.Add(pathPos, TileType.Empty);
+        //            pathQueue.Add(new PathTile(TileType.Random, pathPos, minBound, maxBound, positionGrid));
+        //        }
+        //    }
+        //});
+        for(int i = 0; i < pathQueue.Count; i++)
         {
-            int adjacent = tile.adjacentTiles.Count;
-            if (adjacent != 0)
-            {
-                if (Random.Range(0, 5) == 1)
+                PathTile tile = pathQueue[i];
+                int adjacent = tile.adjacentTiles.Count;
+                if (adjacent != 0)
                 {
-                    BuildChamber(tile);
-                } else if (Random.Range(0, 5) == 1 || (tile.type == TileType.Random && adjacent > 1))
-                {
-                    int randomIndex = Random.Range(0, adjacent);
-                    Vector2 pathPos = tile.adjacentTiles[randomIndex];
-                    positionGrid.Add(pathPos, TileType.Empty);
-                    pathQueue.Add(new PathTile(TileType.Random, pathPos, minBound, maxBound, positionGrid));
+                    if (Random.Range(0, 5) == 1)
+                    {
+                        BuildChamber(tile);
+                    } else if (Random.Range(0, 5) == 1 || (tile.type == TileType.Random && adjacent > 1))
+                    {
+                        int randomIndex = Random.Range(0, adjacent);
+                        Vector2 pathPos = tile.adjacentTiles[randomIndex];
+                        if(!positionGrid.ContainsKey(pathPos))
+                            positionGrid.Add(pathPos, TileType.Empty);
+                        pathQueue.Add(new PathTile(TileType.Random, pathPos, minBound, maxBound, positionGrid));
+                    }
                 }
-            }
-        });
+        }
     }
 
 
