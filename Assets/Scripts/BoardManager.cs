@@ -69,10 +69,43 @@ public class BoardManager : MonoBehaviour
 
     }
 
-    public void setDungeonBoard(Dictionary<Vector2,TileType> tiles,int bound,Vector2 endPos)
+    // switch to dungeon
+    public void SetDungeonBoard(Dictionary<Vector2,TileType> tiles,int bound,Vector2 endPos)
     {
         gameBoardHolder.gameObject.SetActive(false);
+        dungeonBoardHolder = new GameObject("Dungeon").transform;
+        GameObject toInstantiate, instance;
+
+        foreach(KeyValuePair<Vector2,TileType> tile in tiles)
+        {
+            toInstantiate = floorTiles[Random.Range(0, floorTiles.Length)];
+            instance = Instantiate(toInstantiate, new Vector3(tile.Key.x, tile.Key.y, 0f), Quaternion.identity, dungeonBoardHolder) as GameObject;
+        }
+
+        for (int x = -1; x < bound + 1; x++)
+        {
+            for(int y = -1; y < bound + 1; y++)
+            {
+                if(!tiles.ContainsKey(new Vector2(x, y)))
+                {
+                    toInstantiate = outerWallTiles[Random.Range(0, outerWallTiles.Length)];
+                    instance = Instantiate(toInstantiate, new Vector3(x,y, 0f), Quaternion.identity, dungeonBoardHolder) as GameObject;
+                }
+            }
+        }
+
+        toInstantiate = exit;
+        instance = Instantiate(toInstantiate, new Vector3(endPos.x, endPos.y, 0f), Quaternion.identity, dungeonBoardHolder) as GameObject;
+
     }
+
+    //switch to world
+    public void SetWorld()
+    {
+        Destroy(dungeonBoardHolder.gameObject);
+        gameBoardHolder.gameObject.SetActive(true);
+    }
+
 
     //setup our orignal game board
     public void GameBoardSetup()
