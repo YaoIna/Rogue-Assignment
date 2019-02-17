@@ -204,8 +204,8 @@ public class Player : MovingObject
             hitWall.DamageWall(wallDamage);
         } else if (typeof(T) == typeof(Chest))
         {
-            Chest cheest = component as Chest;
-            cheest.open();
+            Chest chest = component as Chest;
+            chest.Open();
         }
         //Set the attack trigger of the player's animation controller in order to play the player's attack animation.
         animator.SetTrigger ("playerChop");

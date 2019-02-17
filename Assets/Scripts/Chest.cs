@@ -24,7 +24,7 @@ public class Chest : MonoBehaviour
         
     }
 
-    public void open()
+    public void Open()
     {
         spriteRenderer.sprite = openSprite;
 

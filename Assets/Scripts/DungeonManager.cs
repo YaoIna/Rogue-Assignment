@@ -116,7 +116,7 @@ public class DungeonManager : MonoBehaviour
                 Vector2 chamberTile = new Vector2(x, y);
                 if (!positionGrid.ContainsKey(chamberTile) && chamberTile.x < maxBound && chamberTile.x > 0 && chamberTile.y < maxBound && chamberTile.y > 0)
                 {
-                    TileType type = Random.Range(0, 5) == 1 ? TileType.Chest : TileType.Empty;
+                    TileType type = Random.Range(0, 50) == 1 ? TileType.Chest : TileType.Empty;
                     positionGrid.Add(chamberTile, type);
                 }
             }
