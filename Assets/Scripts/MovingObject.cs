@@ -84,15 +84,23 @@ public abstract class MovingObject : MonoBehaviour
 			yield return null;
 		}
 	}
-	
-	
-	//The virtual keyword means AttemptMove can be overridden by inheriting classes using the override keyword.
-	//AttemptMove takes a generic parameter T to specify the type of component we expect our unit to interact with if blocked (Player for Enemies, Wall for Player).
-	protected virtual bool AttemptMove <T> (int xDir, int yDir)
-		where T : Component
-	{
-		//Hit will store whatever our linecast hits when Move is called.
-		RaycastHit2D hit;
+
+
+    //The virtual keyword means AttemptMove can be overridden by inheriting classes using the override keyword.
+    //AttemptMove takes a generic parameter T to specify the type of component we expect our unit to interact with if blocked (Player for Enemies, Wall for Player).
+    protected virtual bool AttemptMove<T>(int xDir, int yDir)
+        where T : Component
+    {
+
+        if (xDir == 1)
+        {
+            transform.eulerAngles = Vector3.zero;
+        } else if (xDir == -1)
+        {
+            transform.eulerAngles = new Vector3(0, 180, 0);
+        }
+        //Hit will store whatever our linecast hits when Move is called.
+        RaycastHit2D hit;
 		
 		//Set canMove to true if Move was successful, false if failed.
 		bool canMove = Move (xDir, yDir, out hit);

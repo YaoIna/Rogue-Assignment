@@ -5,6 +5,7 @@ using UnityEngine;
 public class Chest : MonoBehaviour
 {
     public Item item;
+    public Weapon weapon;
     public Sprite openSprite;
     private SpriteRenderer spriteRenderer;
 
@@ -21,15 +22,25 @@ public class Chest : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public void Open()
     {
         spriteRenderer.sprite = openSprite;
 
-        item.InitItem();
-        GameObject toInstantiate = item.gameObject;
+        GameObject toInstantiate;
+        if (Random.Range(0, 2) == 1)
+        {
+            toInstantiate = weapon.gameObject;
+        }
+        else
+        {
+            item.InitItem();
+            toInstantiate = item.gameObject;
+        }
+
+
         GameObject instance = Instantiate(toInstantiate, new Vector3(transform.position.x, transform.position.y, 0f), Quaternion.identity, transform.parent) as GameObject;
 
         gameObject.layer = 10;

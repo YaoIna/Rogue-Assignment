@@ -6,20 +6,27 @@ using System.Collections.Generic;
 //Player inherits from MovingObject, our base class for objects that can move, Enemy also inherits from this.
 public class Player : MovingObject
 {
-	public int wallDamage = 1;					//How much damage a player does to a wall when chopping it.
-	public Text healthText;						//UI Text to display current player health total.
-	private Animator animator;					//Used to store a reference to the Player's animator component.
-	private int health;
+
+    public int wallDamage = 1;					//How much damage a player does to a wall when chopping it.
+    public Text healthText;						//UI Text to display current player health total.
     public bool onWorld;
     public bool dungeonTransition;						//Used to store player health points total during level.
-
     public int attactNumber;
     public int defenseNumber;
     public Image glove;
     public Image boot;
 
+    public Image[] weaponComps; 
+
+    private Animator animator;                 //Used to store a reference to the Player's animator component.
+    private int health;
+
     private Dictionary<string, Item> inventory;
     private Vector2 currentPosition;
+
+    private Weapon weapon;
+
+    private bool isFacingRight = true;
 	
 	//Start overrides the Start function of MovingObject
 	protected override void Start ()
@@ -84,6 +91,11 @@ public class Player : MovingObject
                     GameManager.instance.UpdateGameBoard(horizontal, vertical, currentPosition);
                 }
             }
+        }
+        if (weapon)
+        {
+            weapon.transform.position = transform.position;
+            weapon.playerIsFacingRight = isFacingRight;
         }
 	}
 
@@ -152,9 +164,33 @@ public class Player : MovingObject
             attactNumber += gear.Value.attackNum;
             defenseNumber += gear.Value.defenseNum;
         }
+        // attachNumber will change when pick a item 
+        if (weapon)
+            wallDamage = attactNumber + 3;
     }
 
-        private void OnTriggerEnter2D(Collider2D collision)
+    private void PickUpWeapon(Collider2D collision)
+    {
+        if (weapon)
+            Destroy(transform.GetChild(0).gameObject);
+        collision.enabled = false;
+        collision.transform.parent = transform;
+        weapon = collision.GetComponent<Weapon>();
+        weapon.AcquireWeapon();
+        weapon.isInInventory = true;
+        weapon.EnableSpriteRender(false);
+        wallDamage = attactNumber + 3;
+        for(int i = 0; i < weaponComps.Length; i++)
+        {
+            weaponComps[i].sprite = weapon.GetComponentImage(i);
+            var tempColor = weaponComps[i].color;
+            tempColor.a = 1f;
+            weaponComps[i].color = tempColor;
+        }
+
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
     {
         switch (collision.tag)
         {
@@ -166,21 +202,29 @@ public class Player : MovingObject
             case "Food":
             case "Soda":
                 RefillHealth(collision.tag);
+                Destroy(collision.gameObject);
                 break;
             case "Item":
                 UpdateInventory(collision);
                 Destroy(collision.gameObject);
                 break;
+            case "Weapon":
+                PickUpWeapon(collision);
+                break;
             default:
                 break;
         }
-        Destroy(collision.gameObject);
     }
 
     //AttemptMove overrides the AttemptMove function in the base class MovingObject
     //AttemptMove takes a generic parameter T which for Player will be of the type Wall, it also takes integers for x and y direction to move in.
     protected override bool AttemptMove <T> (int xDir, int yDir)
-	{	
+	{
+        if (xDir == 1 && !isFacingRight)
+            isFacingRight = true;
+        else if (xDir == -1 && isFacingRight)
+            isFacingRight = false;
+
 		//Call the AttemptMove method of the base class, passing in the component T (in this case Wall) and x and y direction to move.
 		bool hit = base.AttemptMove <T> (xDir, yDir);
 		
@@ -209,6 +253,8 @@ public class Player : MovingObject
         }
         //Set the attack trigger of the player's animation controller in order to play the player's attack animation.
         animator.SetTrigger ("playerChop");
+        if (weapon)
+            weapon.UseWeapon();
 	}
 	
 	//LoseHealth is called when an enemy attacks the player.

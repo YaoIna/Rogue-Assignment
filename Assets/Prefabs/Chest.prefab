@@ -120,4 +120,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 538804988816129538, guid: 1218bc43ee1f544ec92cfaa94cc7a720, type: 3}
-  openSprite: {fileID: 0}
+  weapon: {fileID: 2076871397878412107, guid: b7c8de738458749f4b87875474771e43, type: 3}
+  openSprite: {fileID: 21300004, guid: 74675a1a7407c4fc483ff6760a41a9f5, type: 3}
