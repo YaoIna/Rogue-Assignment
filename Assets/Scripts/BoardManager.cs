@@ -28,16 +28,19 @@ public class BoardManager : MonoBehaviour
 
     public GameObject chestTile;
 
-    private Dictionary<Vector2, Vector2> positionGrid = new Dictionary<Vector2, Vector2>();
-    //A tranform to hold our floor tiles
-    private Transform gameBoardHolder;
-
     //dungeon parameters
     public GameObject exit;
     public GameObject[] outerWallTiles;
 
+    public GameObject enemy;
+
+    private Dictionary<Vector2, Vector2> positionGrid = new Dictionary<Vector2, Vector2>();
+    //A tranform to hold our floor tiles
+    private Transform gameBoardHolder;
+
     private Transform dungeonBoardHolder;
     private Dictionary<Vector2, Vector2> dungeonPositionGrids;
+
 
 
     //add tile
@@ -59,14 +62,18 @@ public class BoardManager : MonoBehaviour
         }
 
         //add walls tile
-        if (hasWall)
+        else if (Random.Range(0, 5) == 1)
         {
             //add 0.2 possibility to generate a wall on tile
-            if(Random.Range(0,5) == 1)
+            if(hasWall)
             {
                 tile = wallTiles[Random.Range(0, wallTiles.Length)];
                 tileInstance = Instantiate(tile, new Vector3(position.x, position.y, 0f), Quaternion.identity, gameBoardHolder) as GameObject;
             }
+        } else if (Random.Range(0, GameManager.instance.enemyRatio) == 1)
+        {
+            tile = enemy;
+            tileInstance = Instantiate(tile, new Vector3(position.x, position.y, 0f), Quaternion.identity, gameBoardHolder) as GameObject;
         }
 
     }
@@ -80,14 +87,17 @@ public class BoardManager : MonoBehaviour
 
         foreach(KeyValuePair<Vector2,TileType> tile in tiles)
         {
-            int tt = Random.Range(0, floorTiles.Length);
-            toInstantiate = floorTiles[tt];
+            toInstantiate = floorTiles[Random.Range(0, floorTiles.Length)];
             instance = Instantiate(toInstantiate, new Vector3(tile.Key.x, tile.Key.y, 0f), Quaternion.identity, dungeonBoardHolder) as GameObject;
 
             //create chest
             if (tile.Value == TileType.Chest)
             {
                 toInstantiate = chestTile;
+                instance = Instantiate(toInstantiate, new Vector3(tile.Key.x, tile.Key.y, 0f), Quaternion.identity, dungeonBoardHolder) as GameObject;
+            } else if (tile.Value == TileType.Enemy)
+            {
+                toInstantiate = enemy;
                 instance = Instantiate(toInstantiate, new Vector3(tile.Key.x, tile.Key.y, 0f), Quaternion.identity, dungeonBoardHolder) as GameObject;
             }
         }
@@ -192,6 +202,11 @@ public class BoardManager : MonoBehaviour
                 }
             }
         }
+    }
+
+    public Dictionary<Vector2,Vector2> GetPositionGridOfWorld()
+    {
+        return positionGrid;
     }
 
 

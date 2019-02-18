@@ -4,7 +4,7 @@ using UnityEngine;
 
 public enum TileType
 {
-    Essential, Random, Empty, Chest
+    Essential, Random, Empty, Chest, Enemy
 }
 
 public class DungeonManager : MonoBehaviour
@@ -93,9 +93,15 @@ public class DungeonManager : MonoBehaviour
                     {
                         int randomIndex = Random.Range(0, adjacent);
                         Vector2 pathPos = tile.adjacentTiles[randomIndex];
-                        if(!positionGrid.ContainsKey(pathPos))
+                    if (!positionGrid.ContainsKey(pathPos))
+                    {
+                        if (Random.Range(0, 30) == 1)
+                            positionGrid.Add(pathPos, TileType.Enemy);
+                        else
                             positionGrid.Add(pathPos, TileType.Empty);
-                        pathQueue.Add(new PathTile(TileType.Random, pathPos, minBound, maxBound, positionGrid));
+
+                    }
+                    pathQueue.Add(new PathTile(TileType.Random, pathPos, minBound, maxBound, positionGrid));
                     }
                 }
         }

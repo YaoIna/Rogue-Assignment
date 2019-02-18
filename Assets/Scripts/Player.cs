@@ -78,10 +78,35 @@ public class Player : MovingObject
         {
             if (!dungeonTransition)
             {
-                //Call AttemptMove passing in the generic parameter Wall, since that is what Player may interact with if they encounter one (by attacking it)
-                //Pass in horizontal and vertical as parameters to specify the direction to move Player in.
-                canMove = onWorld ? AttemptMove<Wall>(horizontal, vertical) : AttemptMove<Chest>(horizontal, vertical);
-
+                Vector2 start = transform.position;
+                Vector2 end = start + new Vector2(horizontal, vertical);
+                base.boxCollider.enabled = false;
+                RaycastHit2D hit = Physics2D.Linecast(start, end, base.blockingLayer);
+                base.boxCollider.enabled = true;
+                if (hit.transform != null)
+                {
+                    switch (hit.transform.gameObject.tag)
+                    {
+                        case "Wall":
+                            canMove = AttemptMove<Wall>(horizontal, vertical);
+                            break;
+                        case "Chest":
+                            canMove = AttemptMove<Chest>(horizontal, vertical);
+                            break;
+                        case "Enemy":
+                            canMove = AttemptMove<Enemy>(horizontal, vertical);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                else
+                {
+                    canMove = AttemptMove<Wall>(horizontal, vertical);
+                }
+                ////Call AttemptMove passing in the generic parameter Wall, since that is what Player may interact with if they encounter one (by attacking it)
+                ////Pass in horizontal and vertical as parameters to specify the direction to move Player in.
+                //canMove = onWorld ? AttemptMove<Wall>(horizontal, vertical) : AttemptMove<Chest>(horizontal, vertical);
                 if (canMove && onWorld)
                 {
                     currentPosition.x += horizontal;
@@ -98,6 +123,22 @@ public class Player : MovingObject
             weapon.playerIsFacingRight = isFacingRight;
         }
 	}
+
+    private void AdjustDifficulty()
+    {
+        if (wallDamage < 10)
+        {
+            GameManager.instance.enemyFaster = false;
+            GameManager.instance.enemySmarter = false;
+            GameManager.instance.enemyRatio = 20;
+        }
+        if (wallDamage >= 10)
+            GameManager.instance.enemyFaster = true;
+        if (wallDamage >= 15)
+            GameManager.instance.enemySmarter = true;
+        if (wallDamage >= 20)
+            GameManager.instance.enemyRatio = 15;
+    }
 
     private void SwitchSecene()
     {
@@ -167,6 +208,7 @@ public class Player : MovingObject
         // attachNumber will change when pick a item 
         if (weapon)
             wallDamage = attactNumber + 3;
+        AdjustDifficulty();
     }
 
     private void PickUpWeapon(Collider2D collision)
@@ -187,6 +229,7 @@ public class Player : MovingObject
             tempColor.a = 1f;
             weaponComps[i].color = tempColor;
         }
+        AdjustDifficulty();
 
     }
 
@@ -250,6 +293,10 @@ public class Player : MovingObject
         {
             Chest chest = component as Chest;
             chest.Open();
+        } else if(typeof(T) == typeof(Enemy))
+        {
+            Enemy enemy = component as Enemy;
+             enemy.UnderAttack(wallDamage);
         }
         //Set the attack trigger of the player's animation controller in order to play the player's attack animation.
         animator.SetTrigger ("playerChop");
