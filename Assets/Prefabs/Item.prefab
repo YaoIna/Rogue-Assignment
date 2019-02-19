@@ -70,7 +70,7 @@ SpriteRenderer:
   m_SortingLayerID: 2095415315
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300008, guid: 74675a1a7407c4fc483ff6760a41a9f5, type: 3}
+  m_Sprite: {fileID: 21300006, guid: 74675a1a7407c4fc483ff6760a41a9f5, type: 3}
   m_Color: {r: 0, g: 1, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -119,10 +119,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9ad7e39d50d84d43b07c4e44f0023e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemType: 0
-  attackNum: 2
-  defenseNum: 5
+  itemType: 1
+  attackNum: 5
+  defenseNum: 1
   levelColor: {r: 0, g: 1, b: 0, a: 1}
-  itemName: boot
+  itemName: glove
   glove: {fileID: 21300006, guid: 74675a1a7407c4fc483ff6760a41a9f5, type: 3}
   boot: {fileID: 21300008, guid: 74675a1a7407c4fc483ff6760a41a9f5, type: 3}

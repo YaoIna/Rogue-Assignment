@@ -115,6 +115,8 @@ public class GameManager : MonoBehaviour
         boardManager.SetWorld();
         playerInDungeon = false;
         enemies.Clear();
+
+        SoundManager.instance.FormAudio(false);
     }
 
     public Vector2 GetStartPosInDungeon()
@@ -184,11 +186,15 @@ public class GameManager : MonoBehaviour
     public void AddEnemy(Enemy enemy)
     {
         enemies.Add(enemy);
+        SoundManager.instance.FormAudio(true);
     }
 
     public void RemoveEnemy(Enemy enemy)
     {
         enemies.Remove(enemy);
+        if (enemies.Count == 0)
+            SoundManager.instance.FormAudio(false);
+
     }
 
     public bool CheckTileValidInWorld(Vector2 tilePos)
