@@ -137,7 +137,7 @@ public class Player : MovingObject
         if (wallDamage >= 15)
             GameManager.instance.enemySmarter = true;
         if (wallDamage >= 20)
-            GameManager.instance.enemyRatio = 15;
+            GameManager.instance.enemyRatio = 10;
     }
 
     private void SwitchSecene()
@@ -315,7 +315,7 @@ public class Player : MovingObject
 		health -= loss;
 		
 		//Update the health display with the new total.
-		healthText.text = "-"+ loss + " Health: " + health;
+		healthText.text ="Health: " + health;
 		
 		//Check to see if game has ended.
 		CheckIfGameOver ();

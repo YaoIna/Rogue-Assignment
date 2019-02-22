@@ -13,7 +13,7 @@ public class GameManager : MonoBehaviour
 	[HideInInspector] public bool playersTurn = true;		//Boolean to check if it's players turn, hidden in inspector but public.
     public bool enemyFaster = false;
     public bool enemySmarter = false;
-    public int enemyRatio = 30;
+    public int enemyRatio = 50;
 
     private BoardManager boardManager;
     private DungeonManager dungeonManger;
